@@ -24,7 +24,7 @@ allprojects {
 ```
 
 ### loadercalladapter how to use
-library that provides trial alert and progress on retrofit requests. Unauthorized callback can be useful for request new token 
+library that provides trial alert and progress on retrofit requests. Unauthorized callback can be useful to request new token 
 
 
 Library dependences 
@@ -38,7 +38,7 @@ Library dependences
      'com.google.code.gson:gson:2.6.2'
 ```
 
-Add addCallAdapterFactory for retrofit
+Add addCallAdapterFactory to retrofit
 ```
  Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("url")
@@ -80,7 +80,7 @@ Service service = retrofit.create(Service.class);
             }
         });
 ```
-put in strings.xml for change labels
+put in strings.xml to change labels
 ```
  <string name="geral_mensagem_buscandoDados">Carregando</string>
   <string name="geral_mensagem_naoEncontrado">Não encontrado</string>
@@ -159,7 +159,7 @@ Override onLocationChanged to get updated location.
     
 ```
 
-put in strings.xml for change labels
+put in strings.xml to change labels
 ```
  <string name="no_location_detected">
         No location detected. Make sure location is enabled on the device.
