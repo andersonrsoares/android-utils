@@ -1,10 +1,14 @@
 package br.com.andersonsoares.activityutil;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -115,4 +119,79 @@ public class BaseActivity extends AppCompatActivity {
             progressDialog.dismiss();
     }
 
+
+    public void showDialog(String title,String message) {
+
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title).setMessage(message).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.create().show();
+        } catch (Exception var4) {
+            Log.e("showDialog", var4.toString(), (Throwable)var4);
+        }
+
+    }
+
+    public void showDialog(   String title,   String message,   final BaseActivity.OnClickListener callback) {
+
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle((CharSequence)title).setMessage((CharSequence)message)
+                    .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                public final void onClick(DialogInterface dialog, int id) {
+                    if(callback != null) {
+                        callback.onPositive(dialog);
+                    } else {
+                        dialog.dismiss();
+                    }
+
+                }
+            });
+            builder.create().show();
+        } catch (Exception var5) {
+            Log.e("showDialog", var5.toString(), (Throwable)var5);
+        }
+
+    }
+
+    public void showDialog(   String title,   String message,   String positive,   String negative,   final BaseActivity.OnClickListener callback) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(positive,new DialogInterface.OnClickListener() {
+                public final void onClick(DialogInterface dialog, int id) {
+                    if(callback != null) {
+                        callback.onPositive(dialog);
+                    } else {
+                        dialog.dismiss();
+                    }
+
+                }
+            }).setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                public final void onClick(DialogInterface dialog, int id) {
+                    if(callback != null) {
+                        callback.onNegative(dialog);
+                    } else {
+                        dialog.dismiss();
+                    }
+
+                }
+            });
+            builder.create().show();
+        } catch (Exception var7) {
+            Log.e("showDialog", var7.toString(), (Throwable)var7);
+        }
+
+    }
+
+    public interface OnClickListener {
+        void onPositive(DialogInterface dialog);
+        void onNegative(DialogInterface dialog);
+    }
 }

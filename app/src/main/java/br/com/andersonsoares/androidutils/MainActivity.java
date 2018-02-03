@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import br.com.andersonsoares.activityutil.LocationActivity;
 import br.com.andersonsoares.loadercalladapter.ErrorLoaderCall;
 import br.com.andersonsoares.loadercalladapter.LoaderCall;
 import br.com.andersonsoares.loadercalladapter.LoaderCallAdapterFactory;
@@ -14,12 +15,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends LocationActivity {
 
     private Button button;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
