@@ -101,10 +101,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     ProgressDialog progressDialog;
-    public void showDialog(){
-        showDialog("Buscando dados...");
-    }
-
     public void showDialog(String messange){
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
