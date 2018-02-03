@@ -1,1 +1,1 @@
-include ':app', ':loadercalladapter'
+include ':app', ':loadercalladapter', ':activityutil'
