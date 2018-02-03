@@ -1,5 +1,7 @@
 # android-utils
 
+[![](https://jitpack.io/v/andersonrsoares/android-utils.svg)](https://jitpack.io/#andersonrsoares/android-utils)
+
 ### Installation
 
 Add the following dependency to your module `build.gradle` file:
