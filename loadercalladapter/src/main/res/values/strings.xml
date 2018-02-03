@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">LoaderCallAdapter</string>
+
+    <string name="geral_mensagem_buscandoDados">Carregando</string>
+    <string name="geral_mensagem_naoEncontrado">Não encontrado</string>
+    <string name="geral_mensagem_erroServidor">Erro de Servidor</string>
+    <string name="geral_mensagem_naoAutorizado">Não autorizado</string>
+    <string name="geral_mensagem_erroProblema">Ocorreu um problema</string>
+    <string name="geral_mensagem_erroConexao">Problema de Conexão</string>
+    <string name="geral_mensagem_erroNovamente">Tentar Novamente</string>
+    <string name="geral_mensagem_erroGostariaNovamente">Gostaria de tentar novamente?</string>
+    <string name="geral_button_sim">Sim</string>
+    <string name="geral_button_nao">Não</string>
+    <string name="geral_mensagem_conexaoInternet">Verifique a conexão com internet</string>
+    <string name="geral_button_ok">OK</string>
+    <string name="geral_mensagem_sucesso">Operação realizada com sucesso</string>
+    <string name="geral_mensagem_aguarde">Aguarde...</string>
+    <string name="geral_mensagem_gps">Localização desabliitada, gostaria de habilitar</string>
+    <string name="geral_mensagem_logado">Para continuar você deve estar logado.\nDeseja logar no aplicativo?</string>
+</resources>
