@@ -10,12 +10,13 @@ import android.view.View;
  */
 
 public interface LoaderCall<T> {
-    public int retry();
-    public void cancel();
-    public void enqueue(@Nullable Activity activity, LoaderCallback<T> callback);
-    public void enqueue(boolean retry,@Nullable Activity context, @NonNull LoaderCallback<T> callback);
-    public void enqueue(LoaderCallback<T> callback);
-    public LoaderCall<T> clone();
+    int retry();
+    void cancel();
+    LoaderCall<T> message(String message);
+    LoaderCall<T> retry(boolean retry);
+    LoaderCall<T> with(Activity activity);
+    void enqueue(LoaderCallback<T> callback);
+    LoaderCall<T> clone();
     // Left as an exercise for the reader...
     // TODO MyResponse<T> execute() throws MyHttpException;
 }

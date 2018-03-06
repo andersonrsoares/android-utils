@@ -50,7 +50,7 @@ public class MainActivity extends LocationActivity {
 
         HttpBinService service = retrofit.create(HttpBinService.class);
         LoaderCall<Ip> ip = service.getIp();
-        ip.enqueue(this,new LoaderCallback<Ip>() {
+        ip.message("teste dialog").with(this).enqueue(new LoaderCallback<Ip>() {
             @Override
             public void onResponse(ErrorLoaderCall errorResponse,Ip response) {
                 System.out.println("CLIENT " + response.origin);

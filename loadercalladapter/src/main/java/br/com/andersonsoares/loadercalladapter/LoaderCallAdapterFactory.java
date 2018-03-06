@@ -97,12 +97,32 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         View mViewLayout;
         boolean mRetry = true;
         LoaderCallback<T> mCallback;
+        String mMessange = "";
         LoaderUnauthorizedCallback loaderUnauthorizedCallback;
         MyCallAdapter(LoaderUnauthorizedCallback loaderUnauthorizedCallback,Type responseType,Call<T> call, Executor callbackExecutor) {
             this.call = call;
             this.callbackExecutor = callbackExecutor;
             this.responseType = responseType;
             this.loaderUnauthorizedCallback = loaderUnauthorizedCallback;
+        }
+
+
+        @Override
+        public LoaderCall<T> message(String message) {
+            this.mMessange = message;
+            return this;
+        }
+
+        @Override
+        public LoaderCall<T> retry(boolean retry) {
+            this.mRetry = retry;
+            return this;
+        }
+
+        @Override
+        public LoaderCall<T> with(Activity activity) {
+            this.mContext = activity;
+            return this;
         }
 
         @Override
@@ -113,36 +133,25 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         @Override
         public int retry(){
             timesRetry++;
-            enqueue(mContext,mCallback);
+            enqueue(mCallback);
             return timesRetry;
         }
+
         @Override
         public void enqueue(@NonNull LoaderCallback<T> callback) {
             this.mCallback = callback;
-            this.mRetry = false;
-            enqueue(null,callback);
-        }
-        @Override
-        public void enqueue(boolean retry,@Nullable Activity context,@NonNull LoaderCallback<T> callback) {
-            this.mCallback = callback;
-            this.mRetry = retry;
-            enqueue(context,callback);
-        }
-
-        @Override
-        public void enqueue(@Nullable Activity context,@NonNull LoaderCallback<T> callback) {
-            this.mCallback = callback;
-            this.mContext = context;
             try {
-                this.mViewLayout = context.getWindow().getDecorView().findViewById(android.R.id.content);
-            }catch (Exception ex){
+                if(mContext != null){
+                    this.mViewLayout = mContext.getWindow().getDecorView().findViewById(android.R.id.content);
 
-            }
-            try {
-                if(context != null){
-                    dialog = new ProgressDialog(context);
+                    dialog = new ProgressDialog(mContext);
                     dialog.setCancelable(false);
-                    dialog.setMessage(context.getResources().getString(R.string.geral_mensagem_buscandoDados));
+                    if(mMessange != null && mMessange.length() > 0){
+                        dialog.setMessage(mMessange);
+                    }else{
+                        dialog.setMessage( mContext.getResources().getString(R.string.geral_mensagem_buscandoDados));
+                    }
+
                     dialog.show();
                 }
             }catch (Throwable ex){
