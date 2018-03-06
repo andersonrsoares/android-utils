@@ -50,20 +50,13 @@ public class MainActivity extends LocationActivity {
 
         HttpBinService service = retrofit.create(HttpBinService.class);
         LoaderCall<Ip> ip = service.getIp();
-        ip.enqueue(null,this,new LoaderCallback<Ip>() {
+        ip.enqueue(this,new LoaderCallback<Ip>() {
             @Override
-            public void onResponse(Ip response) {
+            public void onResponse(ErrorLoaderCall errorResponse,Ip response) {
                 System.out.println("CLIENT " + response.origin);
-            }
+                if(errorResponse != null){
 
-            @Override
-            public void onFailure(ErrorLoaderCall errorResponse) {
-                  System.out.println("CLIENT ERROR " + errorResponse.getErrorcode() + " " + errorResponse.getMessage());
-            }
-
-            @Override
-            public void onRetry() {
-                System.out.println("onRetry! ");
+                }
             }
         });
 

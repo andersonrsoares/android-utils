@@ -49,7 +49,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         }
         Type responseType = getParameterUpperBound(0, (ParameterizedType) returnType);
         Executor callbackExecutor = retrofit.callbackExecutor();
-        return new ErrorHandlingCallAdapter<>(loaderUnauthorizedCallback,responseType, callbackExecutor);
+        return new ErrorHandlingCallAdapter(loaderUnauthorizedCallback,responseType, callbackExecutor);
     }
 
     private static final class ErrorHandlingCallAdapter<R> implements CallAdapter<R, LoaderCall<R>> {
@@ -113,39 +113,42 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         @Override
         public int retry(){
             timesRetry++;
-            enqueue(mViewLayout,mContext,mCallback);
+            enqueue(mContext,mCallback);
             return timesRetry;
         }
         @Override
         public void enqueue(@NonNull LoaderCallback<T> callback) {
             this.mCallback = callback;
             this.mRetry = false;
-            enqueue(null,null,callback);
+            enqueue(null,callback);
         }
         @Override
-        public void enqueue(boolean retry,@Nullable View viewLayout,@Nullable Activity context,@NonNull LoaderCallback<T> callback) {
+        public void enqueue(boolean retry,@Nullable Activity context,@NonNull LoaderCallback<T> callback) {
             this.mCallback = callback;
             this.mRetry = retry;
-            enqueue(viewLayout,context,callback);
+            enqueue(context,callback);
         }
 
         @Override
-        public void enqueue(@Nullable View viewLayout, @Nullable Activity context,@NonNull LoaderCallback<T> callback) {
+        public void enqueue(@Nullable Activity context,@NonNull LoaderCallback<T> callback) {
             this.mCallback = callback;
             this.mContext = context;
-            this.mViewLayout = viewLayout;
-            if(context!=null){
-                try {
-                    if(context != null){
-                        dialog = new ProgressDialog(context);
-                        dialog.setCancelable(false);
-                        dialog.setMessage(context.getResources().getString(R.string.geral_mensagem_buscandoDados));
-                        dialog.show();
-                    }
-                }catch (Throwable ex){
-                    Log.e("dialog", "CustomCallback: ",ex);
-                }
+            try {
+                this.mViewLayout = context.getWindow().getDecorView().findViewById(android.R.id.content);
+            }catch (Exception ex){
+
             }
+            try {
+                if(context != null){
+                    dialog = new ProgressDialog(context);
+                    dialog.setCancelable(false);
+                    dialog.setMessage(context.getResources().getString(R.string.geral_mensagem_buscandoDados));
+                    dialog.show();
+                }
+            }catch (Throwable ex){
+                Log.e("dialog", "CustomCallback: ",ex);
+            }
+
             call.enqueue(new Callback<T>() {
                 @Override
                 public void onResponse(Call<T> call, Response<T> response) {
@@ -156,25 +159,25 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
 
                     int code = response.code();
                     if (code >= 200 && code < 300) {
-                        mCallback.onResponse(response.body());
+                        mCallback.onResponse(null,response.body());
                     } else if (code == 401) {
                         if(loaderUnauthorizedCallback != null){
                             loaderUnauthorizedCallback.callback(MyCallAdapter.this);
                         }else{
-                            mCallback.onFailure(new ErrorLoaderCall(null,code));
+                            mCallback.onResponse(new ErrorLoaderCall(null,code),null);
                         }
                     } else if (code >= 400 && code < 500) {
-                        mCallback.onFailure(new ErrorLoaderCall(null,code));
+                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
                     } else if (code >= 500 && code < 600) {
-                        mCallback.onFailure(new ErrorLoaderCall(null,code));
+                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
                     } else {
-                        mCallback.onFailure(new ErrorLoaderCall(null,code));
+                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
                     }
 
                 }
 
                 @Override
-                public void onFailure(Call<T> call, final Throwable t) {
+                public void onFailure(final Call<T> call, final Throwable t) {
                     // TODO if 'callbackExecutor' is not null, the 'callback' methods should be executed
                     // on that executor by submitting a Runnable. This is left as an exercise for the reader.
                     if(dialog != null)
@@ -187,7 +190,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
 
                     if(mViewLayout != null && mContext != null){
                         if(!mRetry){
-                            mCallback.onFailure(new ErrorLoaderCall(t,999));
+                            mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }else
                         if(t instanceof TimeoutException || t instanceof SocketTimeoutException){
                             Snackbar snackbar = Snackbar
@@ -195,7 +198,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                                     .setAction(mContext.getResources().getString(R.string.geral_mensagem_erroNovamente), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            mCallback.onRetry();
+                                            MyCallAdapter.this.retry();
                                         }
                                     });
                             snackbar.show();
@@ -213,16 +216,16 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             Snackbar snackbar = Snackbar
                                     .make(mViewLayout, mContext.getResources().getString(R.string.geral_mensagem_conexaoInternet), Snackbar.LENGTH_LONG);
                             snackbar.show();
-                            mCallback.onFailure(new ErrorLoaderCall(t,999));
+                            mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
                         else{
-                            mCallback.onFailure(new ErrorLoaderCall(t,999));
+                            mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
 
                     }else
                      if(mContext != null){
                         if(!mRetry){
-                            mCallback.onFailure(new ErrorLoaderCall(t,999));
+                            mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
                         else
                         if(t instanceof TimeoutException || t instanceof SocketTimeoutException){
@@ -236,20 +239,20 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             builder.setPositiveButton(mContext.getResources().getString(R.string.geral_button_sim), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     arg0.dismiss();
-                                    mCallback.onRetry();
+                                    MyCallAdapter.this.retry();
                                 }
                             });
                             //define um botão como negativo.
                             builder.setNegativeButton(mContext.getResources().getString(R.string.geral_button_nao), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     arg0.dismiss();
-                                    mCallback.onFailure(new ErrorLoaderCall(t,999));
+                                    mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                                 }
                             });
                             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
-                                    mCallback.onFailure(new ErrorLoaderCall(t,999));
+                                    mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                                 }
                             });
                             //cria o AlertDialog
@@ -269,12 +272,13 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             builder.setPositiveButton(mContext.getResources().getString(R.string.geral_button_ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     arg0.dismiss();
+                                    mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                                 }
                             });
                             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
-                                    mCallback.onFailure(new ErrorLoaderCall(t,999));
+                                    mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                                 }
                             });
                             //cria o AlertDialog
@@ -300,7 +304,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialogInterface) {
-                                    mCallback.onFailure(new ErrorLoaderCall(t,999));
+                                    mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                                 }
                             });
                             //cria o AlertDialog
@@ -309,10 +313,10 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             alerta.show();
                         }
                         else{
-                            mCallback.onFailure(new ErrorLoaderCall(t,999));
+                            mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
                     }else{
-                         mCallback.onFailure(new ErrorLoaderCall(t,999));
+                         mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                      }
 
                 }

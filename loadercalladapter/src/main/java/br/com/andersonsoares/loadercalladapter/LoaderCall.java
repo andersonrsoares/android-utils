@@ -12,8 +12,8 @@ import android.view.View;
 public interface LoaderCall<T> {
     public int retry();
     public void cancel();
-    public void enqueue(@Nullable View viewLayout, @Nullable Activity activity, LoaderCallback<T> callback);
-    public void enqueue(boolean retry, @Nullable View viewLayout, @Nullable Activity context, @NonNull LoaderCallback<T> callback);
+    public void enqueue(@Nullable Activity activity, LoaderCallback<T> callback);
+    public void enqueue(boolean retry,@Nullable Activity context, @NonNull LoaderCallback<T> callback);
     public void enqueue(LoaderCallback<T> callback);
     public LoaderCall<T> clone();
     // Left as an exercise for the reader...
