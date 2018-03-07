@@ -185,11 +185,20 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                         }
                     } else if (code >= 400 && code < 500) {
                         try {
-                            mCallback.onResponse(
-                                    new ErrorLoaderCall(new Throwable(response.errorBody().string()),code,
-                                            new JSONObject(response.errorBody().string())
+                            try {
+                                String errorbody = response.errorBody().string();
+                                mCallback.onResponse(
+                                        new ErrorLoaderCall(new Throwable(response.errorBody().string()),code,
+                                                new JSONObject(errorbody)
 
-                                    ),null);
+                                        ),null);
+                            }catch (Exception ex){
+                                mCallback.onResponse(
+                                        new ErrorLoaderCall(new Throwable(response.raw().body().string()),code,
+                                                new JSONObject(response.errorBody().string())
+
+                                        ),null);
+                            }
                         }catch (Exception ex){
                             try {
                                 mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
