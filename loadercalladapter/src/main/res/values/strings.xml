@@ -2,6 +2,8 @@
     <string name="app_name">LoaderCallAdapter</string>
 
     <string name="geral_mensagem_buscandoDados">Carregando</string>
+    <string name="geral_mensagem_invalido">Dados invalidos</string>
+    <string name="geral_mensagem_desconhecido">Desconhecido</string>
     <string name="geral_mensagem_naoEncontrado">Não encontrado</string>
     <string name="geral_mensagem_erroServidor">Erro de Servidor</string>
     <string name="geral_mensagem_naoAutorizado">Não autorizado</string>

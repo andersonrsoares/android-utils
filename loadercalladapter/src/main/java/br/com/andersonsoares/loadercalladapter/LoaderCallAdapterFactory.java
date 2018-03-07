@@ -11,6 +11,8 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import org.json.JSONObject;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -173,14 +175,45 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                         if(loaderUnauthorizedCallback != null){
                             loaderUnauthorizedCallback.callback(MyCallAdapter.this);
                         }else{
-                            mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                            try {
+                                mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
+                                        .getResources().getString(R.string.geral_mensagem_naoAutorizado)),code),null);
+                            }catch (Exception ex){
+                                mCallback.onResponse(new ErrorLoaderCall(new Throwable("Não autorizado"),code),null);
+                            }
+
                         }
                     } else if (code >= 400 && code < 500) {
-                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                        try {
+                            mCallback.onResponse(
+                                    new ErrorLoaderCall(new Throwable(response.errorBody().string()),code,
+                                            new JSONObject(response.errorBody().string())
+
+                                    ),null);
+                        }catch (Exception ex){
+                            try {
+                                mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
+                                        .getResources().getString(R.string.geral_mensagem_erroServidor)),code),null);
+                            }catch (Exception ex2){
+                                mCallback.onResponse(new ErrorLoaderCall(new Throwable("Erro desconhecido"),code),null);
+                            }
+                        }
                     } else if (code >= 500 && code < 600) {
-                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                         try {
+                            mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
+                                    .getResources().getString(R.string.geral_mensagem_erroServidor)),code),null);
+                        }catch (Exception ex){
+                            mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                        }
                     } else {
-                        mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                        try {
+                            mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
+                                    .getResources().getString(R.string.geral_mensagem_erroServidor)),code),null);
+                        }catch (Exception ex){
+                            mCallback.onResponse(new ErrorLoaderCall(null,code),null);
+                        }
+
+
                     }
 
                 }
