@@ -161,10 +161,8 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
             }
 
             call.enqueue(new Callback<T>() {
-                @Override
-                public void onResponse(Call<T> call, Response<T> response) {
-                    // TODO if 'callbackExecutor' is not null, the 'callback' methods should be executed
-                    // on that executor by submitting a Runnable. This is left as an exercise for the reader.
+
+                public void response(Response<T> response){
                     if(dialog != null)
                         dialog.dismiss();
 
@@ -208,7 +206,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             }
                         }
                     } else if (code >= 500 && code < 600) {
-                         try {
+                        try {
                             mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
                                     .getResources().getString(R.string.geral_mensagem_erroServidor)),code),null);
                         }catch (Exception ex){
@@ -227,10 +225,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
 
                 }
 
-                @Override
-                public void onFailure(final Call<T> call, final Throwable t) {
-                    // TODO if 'callbackExecutor' is not null, the 'callback' methods should be executed
-                    // on that executor by submitting a Runnable. This is left as an exercise for the reader.
+                void failure(final Throwable t){
                     if(dialog != null)
                         dialog.dismiss();
 //                    if (t instanceof IOException) {
@@ -253,14 +248,14 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                                         }
                                     });
                             snackbar.show();
-                           // onResponse.onFailure(new ErrorResponse(mContext.getResources().getString(R.string.geral_mensagem_erroProblema),999));
+                            // onResponse.onFailure(new ErrorResponse(mContext.getResources().getString(R.string.geral_mensagem_erroProblema),999));
                         }
                         else
                         if(t instanceof UnknownHostException){
                             Snackbar snackbar = Snackbar
                                     .make(mViewLayout, mContext.getResources().getString(R.string.geral_mensagem_conexaoInternet), Snackbar.LENGTH_LONG);
                             snackbar.show();
-                          //  onResponse.onFailure(new ErrorResponse(mContext.getResources().getString(R.string.geral_mensagem_erroProblema),999));
+                            //  onResponse.onFailure(new ErrorResponse(mContext.getResources().getString(R.string.geral_mensagem_erroProblema),999));
                         }
                         else
                         if(t instanceof ConnectException ){
@@ -274,7 +269,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                         }
 
                     }else
-                     if(mContext != null){
+                    if(mContext != null){
                         if(!mRetry){
                             mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
@@ -367,8 +362,42 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                             mCallback.onResponse(new ErrorLoaderCall(t,999),null);
                         }
                     }else{
-                         mCallback.onResponse(new ErrorLoaderCall(t,999),null);
-                     }
+                        mCallback.onResponse(new ErrorLoaderCall(t,999),null);
+                    }
+
+                }
+
+                @Override
+                public void onResponse(Call<T> call, final Response<T> response) {
+                    // TODO if 'callbackExecutor' is not null, the 'callback' methods should be executed
+                    // on that executor by submitting a Runnable. This is left as an exercise for the reader.
+                    if(mContext != null){
+                        mContext.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                response(response);
+                            }
+                        });
+
+                    }else{
+                        response(response);
+                    }
+                }
+
+                @Override
+                public void onFailure(final Call<T> call, final Throwable t) {
+                    // TODO if 'callbackExecutor' is not null, the 'callback' methods should be executed
+                    // on that executor by submitting a Runnable. This is left as an exercise for the reader.
+                    if(mContext != null){
+                        mContext.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                failure(t);
+                            }
+                        });
+                    }else{
+                        failure(t);
+                    }
 
                 }
             });
