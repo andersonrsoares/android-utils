@@ -4,6 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import br.com.andersonsoares.activityutil.LocationActivity;
 import br.com.andersonsoares.loadercalladapter.ErrorLoaderCall;
@@ -11,9 +18,16 @@ import br.com.andersonsoares.loadercalladapter.LoaderCall;
 import br.com.andersonsoares.loadercalladapter.LoaderCallAdapterFactory;
 import br.com.andersonsoares.loadercalladapter.LoaderCallback;
 import br.com.andersonsoares.loadercalladapter.LoaderUnauthorizedCallback;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public class MainActivity extends LocationActivity {
 
@@ -36,27 +50,57 @@ public class MainActivity extends LocationActivity {
 
 
     public void teste() {
+
+        final OkHttpClient.Builder client = new OkHttpClient.Builder();
+
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        client.addInterceptor(logInterceptor);
+
+
+        OkHttpClient okHttpClient = client
+                .connectTimeout(5000*3, TimeUnit.MILLISECONDS)
+                .readTimeout(7000*3, TimeUnit.MILLISECONDS)
+                .writeTimeout(7000*3, TimeUnit.MILLISECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://httpbin.org")
+                .baseUrl("http://hom-clickskin.devmakerdigital.com.br/api/")
                 .addCallAdapterFactory(LoaderCallAdapterFactory.create(new LoaderUnauthorizedCallback() {
                     @Override
-                    public void callback(LoaderCall call) {
+                    public void callback(LoaderCall call, Response response) {
                         call.retry();
                         System.out.println("UnauthorizedCallback ");
                     }
                 }))
+                .client(okHttpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         HttpBinService service = retrofit.create(HttpBinService.class);
-        LoaderCall<Ip> ip = service.getIp();
-        ip.message("teste dialog").with(this).enqueue(new LoaderCallback<Ip>() {
+
+        Map<String,String> param = new HashMap<>();
+        param.put("email","");
+        param.put("senha","");
+
+
+        LoaderCall<UserResponse> ip = service.getIp(param);
+        ip.message("teste dialog").with(this).enqueue(new LoaderCallback<UserResponse>() {
             @Override
-            public void onResponse(ErrorLoaderCall errorResponse,Ip response) {
-                System.out.println("CLIENT " + response.origin);
-                if(errorResponse != null){
+            public void onResponse(ErrorLoaderCall errorResponse,UserResponse response) {
+                Toast.makeText(MainActivity.this, "tessss", Toast.LENGTH_SHORT).show();
+
+                try {
+                    System.out.println("CLIENT " + response.data.name);
+                    if(errorResponse != null){
+
+                    }
+                }catch (Exception ex){
 
                 }
+
             }
         });
 
@@ -68,11 +112,16 @@ public class MainActivity extends LocationActivity {
 
 
     interface HttpBinService {
-        @GET("/ip")
-        LoaderCall<Ip> getIp();
+        @POST("medico/login")
+        LoaderCall<UserResponse> getIp(@Body Map<String,String> body);
+
     }
 
-    static class Ip {
-        String origin;
+    static class UserResponse {
+        User data;
+    }
+
+    static class User {
+        String name;
     }
 }

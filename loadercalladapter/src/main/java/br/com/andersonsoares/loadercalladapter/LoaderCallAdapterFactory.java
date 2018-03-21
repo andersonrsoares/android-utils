@@ -171,8 +171,8 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
                         mCallback.onResponse(null,response.body());
                     } else if (code == 401) {
                         if(loaderUnauthorizedCallback != null){
-                            loaderUnauthorizedCallback.callback(MyCallAdapter.this);
-                        }else{
+                            loaderUnauthorizedCallback.callback(MyCallAdapter.this, response);
+                          }else{
                             try {
                                 mCallback.onResponse(new ErrorLoaderCall(new Throwable(mContext
                                         .getResources().getString(R.string.geral_mensagem_naoAutorizado)),code),null);
