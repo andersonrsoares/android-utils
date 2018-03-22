@@ -87,7 +87,7 @@ public class MainActivity extends LocationActivity {
 
 
         LoaderCall<UserResponse> ip = service.getIp(param);
-        ip.message("teste dialog").with(this).enqueue(new LoaderCallback<UserResponse>() {
+        ip.message("teste dialog").with(this).showProgress(false).enqueue(new LoaderCallback<UserResponse>() {
             @Override
             public void onResponse(ErrorLoaderCall errorResponse,UserResponse response) {
                 Toast.makeText(MainActivity.this, "tessss", Toast.LENGTH_SHORT).show();

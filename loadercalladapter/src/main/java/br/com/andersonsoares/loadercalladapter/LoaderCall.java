@@ -15,6 +15,9 @@ public interface LoaderCall<T> {
     LoaderCall<T> message(String message);
     LoaderCall<T> retry(boolean retry);
     LoaderCall<T> with(Activity activity);
+    LoaderCall<T> showProgress(boolean showProgress);
+
+
     void enqueue(LoaderCallback<T> callback);
     LoaderCall<T> clone();
     // Left as an exercise for the reader...

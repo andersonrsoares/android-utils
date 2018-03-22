@@ -100,6 +100,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         boolean mRetry = true;
         LoaderCallback<T> mCallback;
         String mMessange = "";
+        boolean showProgress = true;
         LoaderUnauthorizedCallback loaderUnauthorizedCallback;
         MyCallAdapter(LoaderUnauthorizedCallback loaderUnauthorizedCallback,Type responseType,Call<T> call, Executor callbackExecutor) {
             this.call = call;
@@ -112,6 +113,12 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         @Override
         public LoaderCall<T> message(String message) {
             this.mMessange = message;
+            return this;
+        }
+
+        @Override
+        public LoaderCall<T> showProgress(boolean showProgress) {
+            this.showProgress = showProgress;
             return this;
         }
 
@@ -143,7 +150,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
         public void enqueue(@NonNull LoaderCallback<T> callback) {
             this.mCallback = callback;
             try {
-                if(mContext != null){
+                if(mContext != null && showProgress){
                     this.mViewLayout = mContext.getWindow().getDecorView().findViewById(android.R.id.content);
 
                     dialog = new ProgressDialog(mContext);
