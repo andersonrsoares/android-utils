@@ -8,8 +8,8 @@ Add the following dependency to your module `build.gradle` file:
  You can use separate libraries
 ```gradle
 dependencies {
-            compile 'com.github.andersonrsoares.android-utils:loadercalladapter:1.0.0'
-            compile 'com.github.andersonrsoares.android-utils:activityutil:1.0.0'
+            implementation 'com.github.andersonrsoares:android-utils:1.0.9'
+            implementation 'com.github.andersonrsoares.android-utils:activityutil:1.0.9'
     }
 ```
 
