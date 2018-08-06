@@ -3,8 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/activityutil/activityutil.iml" filepath="$PROJECT_DIR$/activityutil/activityutil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/activityutil/activityutil.iml" filepath="$PROJECT_DIR$/activityutil/activityutil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-utils.iml" filepath="$PROJECT_DIR$/android-utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-utils.iml" filepath="$PROJECT_DIR$/android-utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/loadercalladapter/loadercalladapter.iml" filepath="$PROJECT_DIR$/loadercalladapter/loadercalladapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/loadercalladapter/loadercalladapter.iml" filepath="$PROJECT_DIR$/loadercalladapter/loadercalladapter.iml" />
     </modules>
   </component>

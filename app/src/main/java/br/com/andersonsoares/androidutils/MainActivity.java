@@ -60,9 +60,9 @@ public class MainActivity extends LocationActivity {
 
 
         OkHttpClient okHttpClient = client
-                .connectTimeout(5000*3, TimeUnit.MILLISECONDS)
-                .readTimeout(7000*3, TimeUnit.MILLISECONDS)
-                .writeTimeout(7000*3, TimeUnit.MILLISECONDS)
+                .connectTimeout(1*3, TimeUnit.MILLISECONDS)
+                .readTimeout(1*3, TimeUnit.MILLISECONDS)
+                .writeTimeout(1*3, TimeUnit.MILLISECONDS)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -87,7 +87,8 @@ public class MainActivity extends LocationActivity {
 
 
         LoaderCall<UserResponse> ip = service.getIp(param);
-        ip.message("teste dialog").with(this).showProgress(false).enqueue(new LoaderCallback<UserResponse>() {
+        ip.message("teste dialog").with(this)
+                .showProgress(true).retry(true).enqueue(new LoaderCallback<UserResponse>() {
             @Override
             public void onResponse(ErrorLoaderCall errorResponse,UserResponse response) {
                 Toast.makeText(MainActivity.this, "tessss", Toast.LENGTH_SHORT).show();

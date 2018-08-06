@@ -91,7 +91,7 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
 
     /** Adapts a {@link Call} to {@link LoaderCall}. */
     static class MyCallAdapter<T> implements LoaderCall<T> {
-        private final Call<T> call;
+        private Call<T> call;
         private final Executor callbackExecutor;
         private final Type responseType;
         ProgressDialog dialog;
@@ -139,9 +139,11 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
             call.cancel();
         }
         int timesRetry;
+
         @Override
         public int retry(){
             timesRetry++;
+            call =  call.clone();
             enqueue(mCallback);
             return timesRetry;
         }
