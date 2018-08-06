@@ -8,8 +8,8 @@ Add the following dependency to your module `build.gradle` file:
  You can use separate libraries
 ```gradle
 dependencies {
-            implementation 'com.github.andersonrsoares:android-utils:1.0.9'
-            implementation 'com.github.andersonrsoares.android-utils:activityutil:1.0.9'
+            implementation 'com.github.andersonrsoares:android-utils:1.0.11'
+            implementation 'com.github.andersonrsoares.android-utils:activityutil:1.0.11'
     }
 ```
 
@@ -29,11 +29,11 @@ library that provides trial alert and progress on retrofit requests. Unauthorize
 
 Library dependences 
 ```
-     'com.android.support:appcompat-v7:26.1.0'
-     'com.android.support:support-v4:26.1.0'
-     'com.android.support:design:26.1.0'
-     'com.squareup.retrofit2:retrofit:2.3.0'
-     'com.squareup.retrofit2:converter-gson:2.3.0'
+     'com.android.support:appcompat-v7:27.1.1'
+     'com.android.support:support-v4:27.1.1'
+     'com.android.support:design:27.1.1'
+     'com.squareup.retrofit2:retrofit:2.4.0'
+     'com.squareup.retrofit2:converter-gson:2.4.0'
      'com.squareup.okhttp3:logging-interceptor:3.3.1'
      'com.google.code.gson:gson:2.6.2'
 ```
