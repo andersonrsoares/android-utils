@@ -142,10 +142,17 @@ public final class LoaderCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public int retry(){
-            timesRetry++;
-            call =  call.clone();
-            enqueue(mCallback);
-            return timesRetry;
+            try {
+                timesRetry++;
+                if(call.isExecuted())
+                    call.cancel();
+                call =  call.clone();
+                enqueue(mCallback);
+                return timesRetry;
+            }catch (Throwable ex){
+                return timesRetry;
+            }
+
         }
 
         @Override
